@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Visualize Calculus | Matthew Seto</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[LOCAL] BootStrap CSS-->
+	<!-- <link href="C:\Users\Doormat\Desktop\V\bootstrap-4.0.0-dist\css\bootstrap.min.css" rel="stylesheet">  -->
+
+	<!-- [CDN] BootStrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+	<style>
+		#header {
+			user-select: none;
+		}
+		
+		.custom-checkbox {
+			user-select: none;
+		}
+	</style>
+
+</head>
+
+<center>
+<body id="b" onload=bsSetup() onresize=bsSetup() style="max-width: 100%;overflow-x: hidden;">
+<!--Header-->
+<button class="btn-sm btn-outline-light float-left shadow-sm" data-toggle="collapse" data-target="#header">x</button>
+<div id="header" class="container-fluid collapse shadow-sm show">
+	<span class="h1">Visualize Calculus</span><br>
+	<p class="h7">Graphing Calculator Project | By Matthew Seto</p>
+	<hr>
+</div>
+
+<!--Content-->
+<div class="container-fluid mt-3">
+	<!--Input Group: Function Input & Graph Button-->
+	<div class="container-fluid">
+		<div class="input-group mb-3 shadow-sm">
+			<input id="MathInput" onchange=checkClear() onkeydown=entered(event) type="text" class="form-control text-center" placeholder="Enter Function">
+				<div class="input-group-append">
+					<button onclick=GraphButton() id="graphButton" class="btn btn-outline-success">Graph</button>
+				</div>
+		</div>
+	</div>
+</div>
+
+
+<!--Canvas Options-->
+<div class="container-fluid bg-secondary py-2 mt-3 ">
+	<!-- Checkboxes	 -->
+	<div class="container-fluid">
+		<!--Main Function-->
+		<div class="custom-control custom-checkbox float-left mt-4 mb-3 bg-dark rounded-top">
+			&nbsp
+			<input onchange=showF() id="F" type="checkbox" class="custom-control-input">
+			<label class="custom-control-label text-info" for="F">f(x)&nbsp</label>
+		</div>
+
+		<!--First Derivative-->
+		<div class="custom-control custom-checkbox float-left mt-4 ml-1 mb-3 bg-dark rounded-top">
+			&nbsp
+			<input onchange=firstDerivative() id="d1" type="checkbox" class="custom-control-input">
+			<label class="custom-control-label text-danger" for="d1">f'(x)&nbsp</label>
+		</div>
+
+		<!--Second Derivative-->
+		<div class="custom-control custom-checkbox float-left mt-4 ml-1 mb-3 bg-dark rounded-top">
+			&nbsp
+			<input onchange=secondDerivative() id="d2" type="checkbox" class="custom-control-input">
+			<label class="custom-control-label text-success" for="d2">f"(x)&nbsp</label>
+		</div>
+
+		<!--Fundamental Theorem of Calculus-->
+		<div class="custom-control custom-checkbox float-left mt-4 ml-1 mb-3 bg-dark rounded-top">
+			&nbsp
+			<input onchange=bsFTC() id="ftc" type="checkbox" class="custom-control-input">
+			<label class="custom-control-label text-warning" for="ftc">FTC&nbsp</label>
+		</div>
+
+		<!--Display Marks-->
+		<div class="custom-control custom-checkbox float-left mt-4 ml-1 mb-3 bg-dark rounded-top">
+			&nbsp
+			<input onchange=showMarks() id="marks" type="checkbox" class="custom-control-input">
+			<label class="custom-control-label text-white" for="marks">Marks&nbsp</label>
+		</div>
+	</div>	
+		
+	<!--Ask-->
+	<button class="btn btn-info float-right" onclick="ask()">Ask</button>
+		
+	<!--Wipe-->
+	<button onclick=wipe(1) class="btn btn-danger float-right mr-2">Clear</button>
+		
+	<!--Change Zoom-->
+	<div class="btn-group float-right mr-2">
+		<button onclick=zoomOut() id="zoomOut" class="btn btn-primary">-</button>
+		<button onclick=reset() id="reset" class="btn btn-info">o</button>
+		<button onclick=zoomIn() id="zoomIn" class="btn btn-primary">+</button>
+	</div>	
+	<br><br>
+	<div class="container-fluid bg-dark rounded">
+		<!--JavaScript Canvas: Where the Magic Happens!-->	
+		<canvas id="Graph" class="border bg-light my-2"></canvas>
+	</div>	
+</div>
+<br>
+
+<!--Fundamental Theorem of Calculus Area-->
+	<div id="ftcDisplay" class="col mt-2 border-left bg-light">FTC Area:</div>
+
+<!--Points-->
+	<div class="row p-2">
+		<!--Maxima-->
+		<div class="col border-right bg-light">	
+			<button class="btn btn-outline-warning" data-toggle="collapse" data-target="#Maxima">Maxima</button>
+			<div id="Maxima" class="collapse show">--</div>
+		</div>
+
+		<!--Minima-->
+		<div class="col border-right border-left">
+			<button class="btn btn-outline-warning" data-toggle="collapse" data-target="#Minima">Minima</button>
+			<div id="Minima" class="collapse show">--</div>		
+		</div>
+		
+		<!--Points of Inflection-->
+		<div class="col border-right border-left bg-light">	
+			<button class="btn btn-outline-info" data-toggle="collapse" data-target="#PoI">Points of Inflection</button>
+			<div id="PoI" class="collapse show">--</div>
+		</div>
+		
+		<div class="col border-right border-left">
+			<button class="btn btn-outline-danger" data-toggle="collapse" data-target="#Discontinuities">Discontinuities</button>
+			<div id="Discontinuities" class="collapse show">--</div>	
+		</div>
+	</div>
+</center>
+
+<!--Debug-->
+<p id="feedback" style="display: none; position:absolute; margin: 20vh 0 0 10vw">Feedback:</p>
+
+
+
+
+<!-- --------------------------------------- -->
+<!-- JavaScript, BootStrap, & jQuery Sources -->
+<!-- --------------------------------------- -->
+
+	<!--[LOCAL] jQuery & BootStrap js-->
+		<!-- <script src="C:\Users\Doormat\Desktop\V\jquery-3.3.1.js"></script> -->
+		<!-- <script src="C:\Users\Doormat\Desktop\V\bootstrap-4.0.0-dist\js\bootstrap.min.js"></script> -->
+
+	<!--[CDN] jQuery & BootStrap js-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+
+	<!-- Calculator Functionality js -->
+		<script src="https://doorm4t.github.io/GCalc.js"></script>
+
+</body>
+
+
+</html>
