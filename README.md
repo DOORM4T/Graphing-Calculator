@@ -1,2 +1,2 @@
 # Graphing-Calculator
-Graphing calculator for semester 1 AP Calculus BC project
+A graphing calculator for an AP Calculus BC project. 
